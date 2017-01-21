@@ -12,7 +12,7 @@ module.exports = React.createClass({
         }
         return (<div className={className}>
                     <input type="checkbox" checked={checked} />{this.props.item.title}
-                    <a onClick={this.rename}>rename</a>
+                    <a onClick={this.rename} className="action-link">rename</a>
                 </div>);
     }
 });

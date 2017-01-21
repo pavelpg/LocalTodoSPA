@@ -21485,19 +21485,24 @@
 
 	var React = __webpack_require__(1);
 	var TodoItem = __webpack_require__(179);
+	var TodoItemEdit = __webpack_require__(180);
 	module.exports = React.createClass({
 	    displayName: 'exports',
 
 	    getInitialState: function () {
-	        return { editing: false, editItem: null };
+	        return { editing: false, editItem: null, data: this.props.data };
 	    },
 	    startRename: function (item) {
 	        if (!this.state.editing) {
 	            this.setState({ editing: true, editItem: item });
 	        }
 	    },
+	    endRename: function (item, newTitle) {
+	        item.title = newTitle;
+	        this.setState({ editing: false, editItem: null, data: this.state.data });
+	    },
 	    render: function () {
-	        var data = this.props.data;
+	        var data = this.state.data;
 	        data.sort((a, b) => b.title === a.title ? 0 : b.title > a.title ? 1 : -1);
 	        return React.createElement(
 	            'div',
@@ -21511,11 +21516,7 @@
 	                'div',
 	                null,
 	                data.map(function (item, index) {
-	                    return item === this.state.editItem ? React.createElement(
-	                        'div',
-	                        null,
-	                        'edit'
-	                    ) : React.createElement(TodoItem, { item: item, startRename: this.startRename });
+	                    return item === this.state.editItem ? React.createElement(TodoItemEdit, { item: item, endRename: this.endRename }) : React.createElement(TodoItem, { item: item, startRename: this.startRename });
 	                }, this)
 	            )
 	        ); // value-index;
@@ -21548,8 +21549,44 @@
 	            this.props.item.title,
 	            React.createElement(
 	                'a',
-	                { onClick: this.rename },
+	                { onClick: this.rename, className: 'action-link' },
 	                'rename'
+	            )
+	        );
+	    }
+	});
+
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	module.exports = React.createClass({
+	    displayName: 'exports',
+
+	    save: function () {
+	        this.props.endRename(this.props.item, this.newTitle.value);
+	    },
+	    newTitle: null,
+	    render: function () {
+	        var className = '',
+	            checked = false;
+	        if (this.props.item.done) {
+	            className = 'done';
+	            checked = true;
+	        }
+	        return React.createElement(
+	            'div',
+	            null,
+	            React.createElement('input', { ref: r => {
+	                    this.newTitle = r;
+	                },
+	                value: this.props.title }),
+	            React.createElement(
+	                'a',
+	                { onClick: this.save, className: 'action-link' },
+	                'save'
 	            )
 	        );
 	    }
