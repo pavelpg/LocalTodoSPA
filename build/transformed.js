@@ -21484,22 +21484,74 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-
+	var TodoItem = __webpack_require__(179);
 	module.exports = React.createClass({
 	    displayName: 'exports',
 
+	    getInitialState: function () {
+	        return { editing: false, editItem: null };
+	    },
+	    startRename: function (item) {
+	        if (!this.state.editing) {
+	            this.setState({ editing: true, editItem: item });
+	        }
+	    },
 	    render: function () {
 	        var data = this.props.data;
 	        data.sort((a, b) => b.title === a.title ? 0 : b.title > a.title ? 1 : -1);
 	        return React.createElement(
 	            'div',
 	            null,
-	            data.map((v, i) => React.createElement(
+	            React.createElement(
+	                'h1',
+	                null,
+	                'Todo list:'
+	            ),
+	            React.createElement(
 	                'div',
 	                null,
-	                v.title
-	            ))
+	                data.map(function (item, index) {
+	                    return item === this.state.editItem ? React.createElement(
+	                        'div',
+	                        null,
+	                        'edit'
+	                    ) : React.createElement(TodoItem, { item: item, startRename: this.startRename });
+	                }, this)
+	            )
 	        ); // value-index;
+	    }
+	});
+
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	module.exports = React.createClass({
+	    displayName: 'exports',
+
+	    rename: function () {
+	        this.props.startRename(this.props.item);
+	    },
+	    render: function () {
+	        var className = '',
+	            checked = false;
+	        if (this.props.item.done) {
+	            className = 'done';
+	            checked = true;
+	        }
+	        return React.createElement(
+	            'div',
+	            { className: className },
+	            React.createElement('input', { type: 'checkbox', checked: checked }),
+	            this.props.item.title,
+	            React.createElement(
+	                'a',
+	                { onClick: this.rename },
+	                'rename'
+	            )
+	        );
 	    }
 	});
 
