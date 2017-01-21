@@ -44,12 +44,13 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(32);
 	var TodoApplication = __webpack_require__(178);
 
-	ReactDOM.render(React.createElement(TodoApplication, null), document.getElementById('app'));
+	var todoList = [{ title: 'item1', done: false }, { title: 'item2', done: false }, { title: 'item3', done: true }, { title: 'test', done: false }];
+
+	ReactDOM.render(React.createElement(TodoApplication, { data: todoList }), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -21488,11 +21489,17 @@
 	    displayName: 'exports',
 
 	    render: function () {
+	        var data = this.props.data;
+	        data.sort((a, b) => b.title === a.title ? 0 : b.title > a.title ? 1 : -1);
 	        return React.createElement(
 	            'div',
 	            null,
-	            'Todo component'
-	        );
+	            data.map((v, i) => React.createElement(
+	                'div',
+	                null,
+	                v.title
+	            ))
+	        ); // value-index;
 	    }
 	});
 
