@@ -21490,20 +21490,30 @@
 	    displayName: 'exports',
 
 	    getInitialState: function () {
-	        return { editing: false, editItem: null, data: this.props.data };
+	        return { mode: 'view', editItem: null, data: this.props.data };
 	    },
 	    startRename: function (item) {
-	        if (!this.state.editing) {
-	            this.setState({ editing: true, editItem: item });
+	        if (this.state.mode === 'view') {
+	            this.setState({ mode: 'edit', editItem: item });
 	        }
 	    },
 	    endRename: function (item, newTitle) {
 	        item.title = newTitle;
-	        this.setState({ editing: false, editItem: null, data: this.state.data });
+	        this.setState({ mode: 'view', editItem: null, addItem: null, data: this.state.data });
 	    },
 	    removeItem: function (itemId) {
 	        this.state.data.splice(itemId, 1);
 	        this.setState({ data: this.state.data });
+	    },
+	    startAddItem: function () {
+	        if (this.state.mode === 'view') {
+	            this.setState({ mode: 'add', addItem: { title: '', done: false } });
+	        }
+	    },
+	    endAddItem: function (item, newTitle) {
+	        item.title = newTitle;
+	        this.state.data[this.state.data.length] = item;
+	        this.setState({ mode: 'view', addItem: null, data: this.state.data });
 	    },
 	    render: function () {
 	        var data = this.state.data;
@@ -21516,6 +21526,12 @@
 	                null,
 	                'Todo list:'
 	            ),
+	            React.createElement(
+	                'button',
+	                { onClick: this.startAddItem },
+	                'add'
+	            ),
+	            this.state.mode === 'add' ? React.createElement(TodoItemEdit, { item: this.state.addItem, endRename: this.endAddItem }) : React.createElement('div', null),
 	            React.createElement(
 	                'div',
 	                null,

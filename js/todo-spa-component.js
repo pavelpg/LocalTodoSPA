@@ -3,27 +3,39 @@ var TodoItem = require('./todo-item.js');
 var TodoItemEdit = require('./todo-item-edit.js')
 module.exports = React.createClass({
     getInitialState: function () {
-        return {editing: false, editItem: null, data: this.props.data};
+        return {mode: 'view', editItem: null, data: this.props.data};
     },
     startRename: function (item) {
-        if (!this.state.editing) {
-            this.setState({editing: true, editItem: item});
+        if (this.state.mode === 'view') {
+            this.setState({mode: 'edit', editItem: item});
         }
     },
     endRename: function (item, newTitle){
         item.title = newTitle;
-        this.setState({editing:false, editItem: null, data:this.state.data});
+        this.setState({mode: 'view', editItem: null, addItem: null, data:this.state.data});
         
     },
     removeItem: function (itemId){
         this.state.data.splice(itemId,1);
         this.setState({data:this.state.data});
     },
+    startAddItem: function (){
+        if(this.state.mode === 'view'){
+            this.setState({mode:'add',addItem:{title:'',done:false}});
+        }
+    },
+    endAddItem: function (item, newTitle) {
+        item.title = newTitle;
+        this.state.data[this.state.data.length] = item;
+        this.setState({mode: 'view', addItem: null, data:this.state.data});
+    },
     render: function () {
         var data = this.state.data;
         data.sort((a, b) => b.title === a.title ? 0 : (b.title > a.title ? 1 : -1));
         return (<div>
                 <h1>Todo list:</h1>
+                <button onClick={this.startAddItem}>add</button>
+                { this.state.mode === 'add'? <TodoItemEdit item={this.state.addItem} endRename={this.endAddItem} />: <div></div> }
                 <div>
                     {
                         data.map(
