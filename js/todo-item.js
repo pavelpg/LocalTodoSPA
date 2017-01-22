@@ -4,6 +4,9 @@ module.exports = React.createClass({
     rename: function () {
         this.props.startRename(this.props.item);
     },
+    remove: function () {
+        this.props.removeItem(this.props.itemId);
+    },
     render: function () {
         var className = '',checked = false;
         if(this.props.item.done){
@@ -12,7 +15,8 @@ module.exports = React.createClass({
         }
         return (<div className={className}>
                     <input type="checkbox" checked={checked} />{this.props.item.title}
-                    <a onClick={this.rename} className="action-link">rename</a>
+                    <button onClick={this.rename}>rename</button>
+                    <button onClick={this.remove}>remove</button>
                 </div>);
     }
 });

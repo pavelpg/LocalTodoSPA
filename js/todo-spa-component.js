@@ -15,6 +15,10 @@ module.exports = React.createClass({
         this.setState({editing:false, editItem: null, data:this.state.data});
         
     },
+    removeItem: function (itemId){
+        this.state.data.splice(itemId,1);
+        this.setState({data:this.state.data});
+    },
     render: function () {
         var data = this.state.data;
         data.sort((a, b) => b.title === a.title ? 0 : (b.title > a.title ? 1 : -1));
@@ -26,7 +30,7 @@ module.exports = React.createClass({
                             function (item, index) {
                                 return item === this.state.editItem?
                                     <TodoItemEdit item={item} endRename={this.endRename} />: 
-                                    <TodoItem item={item} startRename={this.startRename} />; 
+                                    <TodoItem item={item} startRename={this.startRename} itemId={index}  removeItem={this.removeItem} />; 
                             },
                         this)
                     }

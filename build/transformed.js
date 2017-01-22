@@ -21501,6 +21501,10 @@
 	        item.title = newTitle;
 	        this.setState({ editing: false, editItem: null, data: this.state.data });
 	    },
+	    removeItem: function (itemId) {
+	        this.state.data.splice(itemId, 1);
+	        this.setState({ data: this.state.data });
+	    },
 	    render: function () {
 	        var data = this.state.data;
 	        data.sort((a, b) => b.title === a.title ? 0 : b.title > a.title ? 1 : -1);
@@ -21516,7 +21520,7 @@
 	                'div',
 	                null,
 	                data.map(function (item, index) {
-	                    return item === this.state.editItem ? React.createElement(TodoItemEdit, { item: item, endRename: this.endRename }) : React.createElement(TodoItem, { item: item, startRename: this.startRename });
+	                    return item === this.state.editItem ? React.createElement(TodoItemEdit, { item: item, endRename: this.endRename }) : React.createElement(TodoItem, { item: item, startRename: this.startRename, itemId: index, removeItem: this.removeItem });
 	                }, this)
 	            )
 	        ); // value-index;
@@ -21535,6 +21539,9 @@
 	    rename: function () {
 	        this.props.startRename(this.props.item);
 	    },
+	    remove: function () {
+	        this.props.removeItem(this.props.itemId);
+	    },
 	    render: function () {
 	        var className = '',
 	            checked = false;
@@ -21548,9 +21555,14 @@
 	            React.createElement('input', { type: 'checkbox', checked: checked }),
 	            this.props.item.title,
 	            React.createElement(
-	                'a',
-	                { onClick: this.rename, className: 'action-link' },
+	                'button',
+	                { onClick: this.rename },
 	                'rename'
+	            ),
+	            React.createElement(
+	                'button',
+	                { onClick: this.remove },
+	                'remove'
 	            )
 	        );
 	    }
@@ -21569,6 +21581,9 @@
 	        this.props.endRename(this.props.item, this.newTitle.value);
 	    },
 	    newTitle: null,
+	    componentDidMount: function () {
+	        this.newTitle.value = this.props.item.title;
+	    },
 	    render: function () {
 	        var className = '',
 	            checked = false;
@@ -21581,11 +21596,10 @@
 	            null,
 	            React.createElement('input', { ref: r => {
 	                    this.newTitle = r;
-	                },
-	                value: this.props.title }),
+	                } }),
 	            React.createElement(
-	                'a',
-	                { onClick: this.save, className: 'action-link' },
+	                'button',
+	                { onClick: this.save },
 	                'save'
 	            )
 	        );
