@@ -3,7 +3,14 @@ var TodoItem = require('./todo-item.js');
 var TodoItemEdit = require('./todo-item-edit.js')
 module.exports = React.createClass({
     getInitialState: function () {
-        return {mode: 'view', editItem: null, data: this.props.data};
+        var data = this.props.getData();
+        if(!(data instanceof Array)){
+            data = [];
+        }
+        return {mode: 'view', editItem: null, data: data};
+    },
+    componentDidUpdate: function(){
+        this.props.setData(this.state.data);
     },
     startRename: function (item) {
         if (this.state.mode === 'view') {

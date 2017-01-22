@@ -49,8 +49,13 @@
 	var TodoApplication = __webpack_require__(178);
 
 	var todoList = [{ title: 'item1', done: false }, { title: 'item2', done: false }, { title: 'item3', done: true }, { title: 'test', done: false }];
-
-	ReactDOM.render(React.createElement(TodoApplication, { data: todoList }), document.getElementById('app'));
+	function getData() {
+	    return JSON.parse(window.localStorage.getItem('todoListData'));
+	}
+	function setData(data) {
+	    window.localStorage.setItem('todoListData', JSON.stringify(data));
+	}
+	ReactDOM.render(React.createElement(TodoApplication, { getData: getData, setData: setData }), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -21490,7 +21495,14 @@
 	    displayName: 'exports',
 
 	    getInitialState: function () {
-	        return { mode: 'view', editItem: null, data: this.props.data };
+	        var data = this.props.getData();
+	        if (!(data instanceof Array)) {
+	            data = [];
+	        }
+	        return { mode: 'view', editItem: null, data: data };
+	    },
+	    componentDidUpdate: function () {
+	        this.props.setData(this.state.data);
 	    },
 	    startRename: function (item) {
 	        if (this.state.mode === 'view') {
