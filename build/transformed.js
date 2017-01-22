@@ -21501,6 +21501,10 @@
 	        item.title = newTitle;
 	        this.setState({ mode: 'view', editItem: null, addItem: null, data: this.state.data });
 	    },
+	    updateItemDone: function (item, done) {
+	        item.done = done;
+	        this.setState({ data: this.state.data });
+	    },
 	    removeItem: function (itemId) {
 	        this.state.data.splice(itemId, 1);
 	        this.setState({ data: this.state.data });
@@ -21536,7 +21540,7 @@
 	                'div',
 	                null,
 	                data.map(function (item, index) {
-	                    return item === this.state.editItem ? React.createElement(TodoItemEdit, { item: item, endRename: this.endRename }) : React.createElement(TodoItem, { item: item, startRename: this.startRename, itemId: index, removeItem: this.removeItem });
+	                    return item === this.state.editItem ? React.createElement(TodoItemEdit, { item: item, endRename: this.endRename }) : React.createElement(TodoItem, { item: item, startRename: this.startRename, updateItemDone: this.updateItemDone, itemId: index, removeItem: this.removeItem });
 	                }, this)
 	            )
 	        ); // value-index;
@@ -21558,6 +21562,9 @@
 	    remove: function () {
 	        this.props.removeItem(this.props.itemId);
 	    },
+	    handleDoneClick: function (e) {
+	        this.props.updateItemDone(this.props.item, e.target.checked);
+	    },
 	    render: function () {
 	        var className = '',
 	            checked = false;
@@ -21568,7 +21575,7 @@
 	        return React.createElement(
 	            'div',
 	            { className: className },
-	            React.createElement('input', { type: 'checkbox', checked: checked }),
+	            React.createElement('input', { type: 'checkbox', checked: checked, onClick: this.handleDoneClick }),
 	            this.props.item.title,
 	            React.createElement(
 	                'button',
