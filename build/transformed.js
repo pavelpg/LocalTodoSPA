@@ -44,6 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(32);
 	var TodoApplication = __webpack_require__(178);
@@ -21488,52 +21490,56 @@
 /* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(1);
 	var TodoItem = __webpack_require__(179);
 	var TodoItemEdit = __webpack_require__(180);
 	module.exports = React.createClass({
 	    displayName: 'exports',
 
-	    getInitialState: function () {
+	    getInitialState: function getInitialState() {
 	        var data = this.props.getData();
 	        if (!(data instanceof Array)) {
 	            data = [];
 	        }
 	        return { mode: 'view', editItem: null, data: data };
 	    },
-	    componentDidUpdate: function () {
+	    componentDidUpdate: function componentDidUpdate() {
 	        this.props.setData(this.state.data);
 	    },
-	    startRename: function (item) {
+	    startRename: function startRename(item) {
 	        if (this.state.mode === 'view') {
 	            this.setState({ mode: 'edit', editItem: item });
 	        }
 	    },
-	    endRename: function (item, newTitle) {
+	    endRename: function endRename(item, newTitle) {
 	        item.title = newTitle;
 	        this.setState({ mode: 'view', editItem: null, addItem: null, data: this.state.data });
 	    },
-	    updateItemDone: function (item, done) {
+	    updateItemDone: function updateItemDone(item, done) {
 	        item.done = done;
 	        this.setState({ data: this.state.data });
 	    },
-	    removeItem: function (itemId) {
+	    removeItem: function removeItem(itemId) {
 	        this.state.data.splice(itemId, 1);
 	        this.setState({ data: this.state.data });
 	    },
-	    startAddItem: function () {
+	    startAddItem: function startAddItem() {
 	        if (this.state.mode === 'view') {
 	            this.setState({ mode: 'add', addItem: { title: '', done: false } });
 	        }
 	    },
-	    endAddItem: function (item, newTitle) {
+	    endAddItem: function endAddItem(item, newTitle) {
 	        item.title = newTitle;
 	        this.state.data[this.state.data.length] = item;
 	        this.setState({ mode: 'view', addItem: null, data: this.state.data });
 	    },
-	    render: function () {
+	    render: function render() {
 	        var data = this.state.data;
-	        data.sort((a, b) => b.title === a.title ? 0 : b.title > a.title ? 1 : -1);
+	        data.sort(function (a, b) {
+	            return b.title === a.title ? 0 : b.title > a.title ? 1 : -1;
+	        });
 	        return React.createElement(
 	            'div',
 	            null,
@@ -21563,21 +21569,23 @@
 /* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(1);
 
 	module.exports = React.createClass({
 	    displayName: 'exports',
 
-	    rename: function () {
+	    rename: function rename() {
 	        this.props.startRename(this.props.item);
 	    },
-	    remove: function () {
+	    remove: function remove() {
 	        this.props.removeItem(this.props.itemId);
 	    },
-	    handleDoneClick: function (e) {
+	    handleDoneClick: function handleDoneClick(e) {
 	        this.props.updateItemDone(this.props.item, e.target.checked);
 	    },
-	    render: function () {
+	    render: function render() {
 	        var className = '',
 	            checked = false;
 	        if (this.props.item.done) {
@@ -21607,19 +21615,23 @@
 /* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	var React = __webpack_require__(1);
 
 	module.exports = React.createClass({
 	    displayName: 'exports',
 
-	    save: function () {
+	    save: function save() {
 	        this.props.endRename(this.props.item, this.newTitle.value);
 	    },
 	    newTitle: null,
-	    componentDidMount: function () {
+	    componentDidMount: function componentDidMount() {
 	        this.newTitle.value = this.props.item.title;
 	    },
-	    render: function () {
+	    render: function render() {
+	        var _this = this;
+
 	        var className = '',
 	            checked = false;
 	        if (this.props.item.done) {
@@ -21629,8 +21641,8 @@
 	        return React.createElement(
 	            'div',
 	            null,
-	            React.createElement('input', { ref: r => {
-	                    this.newTitle = r;
+	            React.createElement('input', { ref: function ref(r) {
+	                    _this.newTitle = r;
 	                } }),
 	            React.createElement(
 	                'button',
